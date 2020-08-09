@@ -20,8 +20,8 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <local:HsvControl Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" x:Name="hsvControl"
-                          Margin="0,0,20,0" PropertyChanged="hsvControl_PropertyChanged"/>
+        <local:HsvControl
+            Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" x:Name="hsvControl" Margin="0,0,20,0"/>
 
         <Grid Grid.Row="0" Grid.Column="1" Margin="0,0,0,20">
             <Grid.ColumnDefinitions>

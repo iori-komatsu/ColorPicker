@@ -2,6 +2,8 @@
 using Reactive.Bindings;
 using System.Windows;
 using System.Windows.Media;
+using System.Reactive.Linq;
+using Reactive.Bindings.Extensions;
 
 namespace ColorPicker {
     /// <summary>
@@ -9,6 +11,7 @@ namespace ColorPicker {
     /// </summary>
     public partial class MainWindow : Window {
         public ReactiveCommand CopyColorCodeCommand { get; } = new ReactiveCommand();
+        public ReactivePropertySlim<double> Hue { get; private set; }
 
         public MainWindow() {
             InitializeComponent();
@@ -16,13 +19,8 @@ namespace ColorPicker {
             this.DataContext = this;
 
             CopyColorCodeCommand.Subscribe(_ => CopyColorCode());
-            UpdateDisplayColor();
-            UpdateHsvSliders();
-        }
-
-        private void hsvControl_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
-            UpdateDisplayColor();
-            UpdateHsvSliders();
+            hsvControl.ObserveProperty(ctl => ctl.SelectedColor).Subscribe(_ => UpdateDisplayColor());
+            hsvControl.ObserveProperty(ctl => ctl.SelectedHsv).Subscribe(_ => UpdateHsvSliders());
         }
 
         private void UpdateDisplayColor() {
