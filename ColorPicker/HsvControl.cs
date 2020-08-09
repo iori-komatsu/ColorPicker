@@ -37,6 +37,7 @@ namespace ColorPicker {
         public HsvControl() {
             this.Width = bitmap.PixelWidth;
             this.Height = bitmap.PixelHeight;
+            this.IsTabStop = false;
         }
 
         public Hsv SelectedHsv {
