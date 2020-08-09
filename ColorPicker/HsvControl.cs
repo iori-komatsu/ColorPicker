@@ -25,8 +25,8 @@ namespace ColorPicker {
         private State currentState = State.Initial;
 
         private float currentHue = 0.0f;
-        private float currentSaturation = 1.0f;
-        private float currentValue = 1.0f;
+        private float currentSaturation = 0.0f;
+        private float currentValue = 0.0f;
 
         public event PropertyChangedEventHandler PropertyChanged;
 

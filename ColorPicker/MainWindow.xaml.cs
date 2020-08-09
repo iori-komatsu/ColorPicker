@@ -11,7 +11,13 @@ namespace ColorPicker {
     /// </summary>
     public partial class MainWindow : Window {
         public ReactiveCommand CopyColorCodeCommand { get; } = new ReactiveCommand();
-        public ReactivePropertySlim<double> Hue { get; private set; }
+
+        public ReadOnlyReactivePropertySlim<string> CurrentColorCode { get; }
+        public ReadOnlyReactivePropertySlim<Brush> SelectedColorBrush { get; }
+        public ReadOnlyReactivePropertySlim<Brush> InvertedSelectedColorBrush { get; }
+        public ReadOnlyReactivePropertySlim<double> SelectedHue { get; }
+        public ReadOnlyReactivePropertySlim<double> SelectedSaturation { get; }
+        public ReadOnlyReactivePropertySlim<double> SelectedValue { get; }
 
         public MainWindow() {
             InitializeComponent();
@@ -19,25 +25,30 @@ namespace ColorPicker {
             this.DataContext = this;
 
             CopyColorCodeCommand.Subscribe(_ => CopyColorCode());
-            hsvControl.ObserveProperty(ctl => ctl.SelectedColor).Subscribe(_ => UpdateDisplayColor());
-            hsvControl.ObserveProperty(ctl => ctl.SelectedHsv).Subscribe(_ => UpdateHsvSliders());
-        }
 
-        private void UpdateDisplayColor() {
-            colorDisplay.Background = new SolidColorBrush(hsvControl.SelectedColor);
-            colorDisplayTextBox.Text = GetCurrentColorCode();
-            colorDisplayTextBox.Foreground = new SolidColorBrush(hsvControl.SelectedColor.Invert());
-        }
+            var propSelectedColor = hsvControl.ObserveProperty(ctl => ctl.SelectedColor);
+            var propSelectedHsv = hsvControl.ObserveProperty(ctl => ctl.SelectedHsv);
 
-        private string GetCurrentColorCode() {
-            Color c = hsvControl.SelectedColor;
-            return $"#{c.R:x2}{c.G:x2}{c.B:x2}";
-        }
+            CurrentColorCode = propSelectedColor
+                .Select(color => $"#{color.R:x2}{color.G:x2}{color.B:x2}")
+                .ToReadOnlyReactivePropertySlim();
+            SelectedColorBrush = propSelectedColor
+                .Select(color => (Brush)new SolidColorBrush(color))
+                .ToReadOnlyReactivePropertySlim();
+            InvertedSelectedColorBrush = propSelectedColor
+                .Select(color => (Brush)new SolidColorBrush(color.Invert()))
+                .ToReadOnlyReactivePropertySlim();
+            SelectedHue = propSelectedHsv
+                .Select(hsv => (double)hsv.H)
+                .ToReadOnlyReactivePropertySlim();
+            SelectedSaturation = propSelectedHsv
+                .Select(hsv => (double)hsv.S)
+                .ToReadOnlyReactivePropertySlim();
+            SelectedValue = propSelectedHsv
+                .Select(hsv => (double)hsv.V)
+                .ToReadOnlyReactivePropertySlim();
 
-        private void UpdateHsvSliders() {
-            sliderH.Value = hsvControl.SelectedHsv.H;
-            sliderS.Value = hsvControl.SelectedHsv.S;
-            sliderV.Value = hsvControl.SelectedHsv.V;
+            hsvControl.SelectedHsv = new Hsv(0, 1, 1);
         }
 
         private void sliderH_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) {
@@ -56,8 +67,7 @@ namespace ColorPicker {
         }
 
         private void CopyColorCode() {
-            string code = GetCurrentColorCode();
-            Clipboard.SetText(code);
+            Clipboard.SetText(CurrentColorCode.Value);
         }
     }
 }
