@@ -39,14 +39,27 @@ namespace ColorPicker {
             this.Height = bitmap.PixelHeight;
         }
 
-        public Color SelectedColor {
-            get {
-                return ColorF.FromHSV(currentHue, currentSaturation, currentValue).ToColor();
+        public Hsv SelectedHsv {
+            get => new Hsv(currentHue, currentSaturation, currentValue);
+            set {
+                if (value != SelectedHsv) {
+                    currentHue = value.H;
+                    currentSaturation = value.S;
+                    currentValue = value.V;
+
+                    InvalidateVisual();
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SelectedColor)));
+                }
             }
+        }
+
+        public Color SelectedColor {
+            get => ColorF.FromHsv(currentHue, currentSaturation, currentValue).ToColor();
         }
 
         private void OnColorChanged() {
             InvalidateVisual();
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SelectedHsv)));
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SelectedColor)));
         }
 
@@ -109,7 +122,7 @@ namespace ColorPicker {
                     // Hue
                     double hue = Math.Atan2(centerY - y, centerX - x) / (2.0 * Math.PI);
                     if (hue < 0) hue += 1.0;
-                    color = ColorF.FromHSV((float)hue, 1, 1).ToColor();
+                    color = ColorF.FromHsv((float)hue, 1, 1).ToColor();
                 } else if (MathF.Between(r1, MathF.Sq(hueCircleOuterRadius), MathF.Sq(hueCircleOuterRadius + BorderWidth)) ||
                            MathF.Between(r1, MathF.Sq(hueCircleInnerRadius - BorderWidth), MathF.Sq(hueCircleInnerRadius))) {
                     // Hue border
@@ -118,7 +131,7 @@ namespace ColorPicker {
                     // SV
                     float s = (x - (float)svPlaneRect.Left) / svPlaneWidth;
                     float v = 1.0f - (y - (float)svPlaneRect.Top) / svPlaneWidth;
-                    color = ColorF.FromHSV(currentHue, s, v).ToColor();
+                    color = ColorF.FromHsv(currentHue, s, v).ToColor();
                 } else if (svBorderRect.Contains(x, y)) {
                     // SV border
                     color = BorderColor;

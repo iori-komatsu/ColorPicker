@@ -5,9 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ColorPicker"
         mc:Ignorable="d"
-        Title="Color Picker" Height="500" Width="500">
-    <Grid Margin="10">
+        Title="Color Picker" Height="350" Width="550">
+    <Grid Margin="20">
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
@@ -15,8 +16,41 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <local:HsvControl Grid.Row="0" Grid.Column="0" x:Name="hsvControl" PropertyChanged="hsvControl_PropertyChanged"></local:HsvControl>
-        <Border Name="colorDisplay" Grid.Row="1" Grid.Column="0" Margin="10">
+        <local:HsvControl Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" x:Name="hsvControl"
+                          Margin="0,0,20,0" PropertyChanged="hsvControl_PropertyChanged"/>
+
+        <Grid Grid.Row="0" Grid.Column="1" Margin="0,0,0,20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Label Grid.Row="0" Grid.Column="0" FontWeight="Bold" VerticalAlignment="Center" Margin="0,5,0,5">H:</Label>
+            <Slider Grid.Row="0" Grid.Column="1" Name="sliderH" VerticalAlignment="Center" Margin="5,0,10,0"
+                    Minimum="0.0" Maximum="1.0" ValueChanged="sliderH_ValueChanged"></Slider>
+            <TextBox Grid.Row="0" Grid.Column="2" Name="tbH" DockPanel.Dock="Right" Width="50" VerticalAlignment="Center"
+                     Text="{Binding ElementName=sliderH, Path=Value, StringFormat={}{0:f3}, UpdateSourceTrigger=PropertyChanged}"/>
+
+            <Label Grid.Row="1" Grid.Column="0" FontWeight="Bold" VerticalAlignment="Center" Margin="0,5,0,5">S:</Label>
+            <Slider Grid.Row="1" Grid.Column="1" Name="sliderS" VerticalAlignment="Center" Margin="5,0,10,0"
+                    Minimum="0.0" Maximum="1.0" ValueChanged="sliderS_ValueChanged"></Slider>
+            <TextBox Grid.Row="1" Grid.Column="2" Name="tbS" DockPanel.Dock="Right" Width="50" VerticalAlignment="Center"
+                     Text="{Binding ElementName=sliderS, Path=Value, StringFormat={}{0:f3}, UpdateSourceTrigger=PropertyChanged}"/>
+
+            <Label Grid.Row="2" Grid.Column="0" FontWeight="Bold" VerticalAlignment="Center" Margin="0,5,0,5">V:</Label>
+            <Slider Grid.Row="2" Grid.Column="1" Name="sliderV" VerticalAlignment="Center" Margin="5,0,10,0"
+                    Minimum="0.0" Maximum="1.0" ValueChanged="sliderV_ValueChanged"></Slider>
+            <TextBox Grid.Row="2" Grid.Column="2" Name="tbV" DockPanel.Dock="Right" Width="50" VerticalAlignment="Center"
+                     Text="{Binding ElementName=sliderV, Path=Value, StringFormat={}{0:f3}, UpdateSourceTrigger=PropertyChanged}"/>
+        </Grid>
+
+        <Border Name="colorDisplay" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" BorderThickness="1" BorderBrush="Gray">
             <TextBox Name="colorDisplayTextBox"
                      TextAlignment="Center"
                      VerticalAlignment="Center"

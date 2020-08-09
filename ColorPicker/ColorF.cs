@@ -17,7 +17,7 @@ namespace ColorPicker {
 
         public ColorF(float r, float g, float b) : this(1.0f, r, g, b) { }
 
-        public static ColorF FromHSV(float h, float s, float v) {
+        public static ColorF FromHsv(float h, float s, float v) {
             float p1 = Math.Abs(MathF.Frac(h + 1.0f) * 6.0f - 3.0f);
             float p2 = Math.Abs(MathF.Frac(h + 2.0f / 3.0f) * 6.0f - 3.0f);
             float p3 = Math.Abs(MathF.Frac(h + 1.0f / 3.0f) * 6.0f - 3.0f);

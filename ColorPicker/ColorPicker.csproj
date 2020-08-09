@@ -91,6 +91,7 @@
     </Compile>
     <Compile Include="ColorExtensions.cs" />
     <Compile Include="ColorF.cs" />
+    <Compile Include="Hsv.cs" />
     <Compile Include="HsvControl.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
