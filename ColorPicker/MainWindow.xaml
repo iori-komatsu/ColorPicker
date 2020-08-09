@@ -17,7 +17,14 @@
 
         <local:HsvControl Grid.Row="0" Grid.Column="0" x:Name="hsvControl" PropertyChanged="hsvControl_PropertyChanged"></local:HsvControl>
         <Border Name="colorDisplay" Grid.Row="1" Grid.Column="0" Margin="10">
-            <TextBlock Name="colorDisplayTextBox" TextAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" FontSize="20"/>
+            <TextBox Name="colorDisplayTextBox"
+                     TextAlignment="Center"
+                     VerticalAlignment="Center"
+                     FontWeight="Bold"
+                     FontSize="20"
+                     Background="Transparent"
+                     BorderThickness="0"
+                     IsReadOnly="True"/>
         </Border>
     </Grid>
 </Window>
