@@ -6,6 +6,10 @@
         xmlns:local="clr-namespace:ColorPicker"
         mc:Ignorable="d"
         Title="Color Picker" Height="350" Width="550">
+    <Window.InputBindings>
+        <KeyBinding Modifiers="Ctrl" Key="C" Command="{Binding CopyColorCodeCommand}" />
+    </Window.InputBindings>
+
     <Grid Margin="20">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>

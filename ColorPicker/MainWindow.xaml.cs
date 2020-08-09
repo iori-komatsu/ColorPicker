@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System;
+using Reactive.Bindings;
+using System.Windows;
 using System.Windows.Media;
 
 namespace ColorPicker {
@@ -6,8 +8,14 @@ namespace ColorPicker {
     /// MainWindow.xaml の相互作用ロジック
     /// </summary>
     public partial class MainWindow : Window {
+        public ReactiveCommand CopyColorCodeCommand { get; } = new ReactiveCommand();
+
         public MainWindow() {
             InitializeComponent();
+
+            this.DataContext = this;
+
+            CopyColorCodeCommand.Subscribe(_ => CopyColorCode());
             UpdateDisplayColor();
             UpdateHsvSliders();
         }
@@ -19,11 +27,12 @@ namespace ColorPicker {
 
         private void UpdateDisplayColor() {
             colorDisplay.Background = new SolidColorBrush(hsvControl.SelectedColor);
-            colorDisplayTextBox.Text = FormatColor(hsvControl.SelectedColor);
+            colorDisplayTextBox.Text = GetCurrentColorCode();
             colorDisplayTextBox.Foreground = new SolidColorBrush(hsvControl.SelectedColor.Invert());
         }
 
-        private string FormatColor(Color c) {
+        private string GetCurrentColorCode() {
+            Color c = hsvControl.SelectedColor;
             return $"#{c.R:x2}{c.G:x2}{c.B:x2}";
         }
 
@@ -46,6 +55,11 @@ namespace ColorPicker {
         private void sliderV_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) {
             Hsv current = hsvControl.SelectedHsv;
             hsvControl.SelectedHsv = new Hsv(current.H, current.S, (float)sliderV.Value);
+        }
+
+        private void CopyColorCode() {
+            string code = GetCurrentColorCode();
+            Clipboard.SetText(code);
         }
     }
 }
