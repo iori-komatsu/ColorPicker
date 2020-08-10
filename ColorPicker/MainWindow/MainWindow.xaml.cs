@@ -17,6 +17,11 @@ namespace ColorPicker.MainWindow {
             get => (MainWindowVM)Resources["ViewModel"];
         }
 
+        protected override void OnClosed(EventArgs e) {
+            base.OnClosed(e);
+            ViewModel.Dispose();
+        }
+
         private void sliderH_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) {
             Hsv current = ViewModel.SelectedHsv.Value;
             ViewModel.SelectedHsv.Value = new Hsv((float)sliderH.Value, current.S, current.V);
