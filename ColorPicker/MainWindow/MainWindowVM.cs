@@ -6,7 +6,7 @@ using System.Windows.Media;
 namespace ColorPicker.MainWindow {
     class MainWindowVM : ViewModelBase, IDisposable {
 
-        public ReactivePropertySlim<Hsv> SelectedHsv { get; set; }
+        public ReactivePropertySlim<Hsv> SelectedHsv { get; } = new ReactivePropertySlim<Hsv>();
 
         public ReadOnlyReactivePropertySlim<Color> SelectedColor { get; }
         public ReadOnlyReactivePropertySlim<Brush> SelectedColorBrush { get; }
@@ -20,8 +20,6 @@ namespace ColorPicker.MainWindow {
         public ReactiveCommand CopyColorCodeCommand { get; } = new ReactiveCommand();
 
         public MainWindowVM() {
-            SelectedHsv = new ReactivePropertySlim<Hsv>(new Hsv(0, 0, 0));
-
             SelectedColor = SelectedHsv
                 .Select(hsv => ColorF.FromHsv(hsv.H, hsv.S, hsv.V).ToColor())
                 .ToReadOnlyReactivePropertySlim();
