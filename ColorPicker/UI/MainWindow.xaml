@@ -8,8 +8,6 @@
         Title="Color Picker" Height="350" Width="550">
 
     <Window.Resources>
-        <local:MainWindowVM x:Key="ViewModel"/>
-
         <Style TargetType="Label" x:Key="HsvSliderLabel">
             <Setter Property="FontWeight" Value="Bold"/>
             <Setter Property="Margin" Value="0,5,0,5"/>
@@ -30,11 +28,10 @@
     </Window.Resources>
     
     <Window.InputBindings>
-        <KeyBinding Modifiers="Ctrl" Key="C"
-                    Command="{Binding Path=CopyColorCodeCommand, Source={StaticResource ViewModel}}"/>
+        <KeyBinding Modifiers="Ctrl" Key="C" Command="{Binding CopyColorCodeCommand}"/>
     </Window.InputBindings>
 
-    <Grid DataContext="{StaticResource ViewModel}" Margin="20">
+    <Grid Margin="20">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>

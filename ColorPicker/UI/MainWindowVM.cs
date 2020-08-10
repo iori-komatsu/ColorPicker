@@ -1,12 +1,13 @@
 ﻿using Reactive.Bindings;
+using Reactive.Bindings.Extensions;
 using System;
 using System.Reactive.Linq;
 using System.Windows.Media;
 
 namespace ColorPicker.UI {
-    class MainWindowVM : ViewModelBase, IDisposable {
+    public class MainWindowVM : ViewModelBase, IDisposable {
 
-        public ReactivePropertySlim<Hsv> SelectedHsv { get; } = new ReactivePropertySlim<Hsv>();
+        public ReactiveProperty<Hsv> SelectedHsv { get; }
 
         public ReadOnlyReactivePropertySlim<Color> SelectedColor { get; }
         public ReadOnlyReactivePropertySlim<Brush> SelectedColorBrush { get; }
@@ -19,7 +20,10 @@ namespace ColorPicker.UI {
 
         public ReactiveCommand CopyColorCodeCommand { get; } = new ReactiveCommand();
 
-        public MainWindowVM() {
+        public MainWindowVM(ColorPickerModel model) {
+            SelectedHsv = model
+                .ToReactivePropertyAsSynchronized(m => m.CurrentHsv);
+
             SelectedColor = SelectedHsv
                 .Select(hsv => ColorF.FromHsv(hsv.H, hsv.S, hsv.V).ToColor())
                 .ToReadOnlyReactivePropertySlim();
