@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ColorPicker {
-    public struct Hsv {
+    public struct Hsv : IEquatable<Hsv> {
         public float H { get; }
         public float S { get; }
         public float V { get; }
@@ -16,24 +12,30 @@ namespace ColorPicker {
             this.V = v;
         }
 
-        public static bool operator==(Hsv lhs, Hsv rhs) {
-            return lhs.H == rhs.H && lhs.S == rhs.S && lhs.V == rhs.V;
-        }
-
-        public static bool operator!=(Hsv lhs, Hsv rhs) {
-            return !(lhs == rhs);
-        }
-
         public override bool Equals(object obj) {
-            if (null == obj || this.GetType() != obj.GetType())
-                return false;
-            return this == (Hsv)obj;
+            return obj is Hsv hsv && Equals(hsv);
+        }
+
+        public bool Equals(Hsv other) {
+            return H == other.H &&
+                   S == other.S &&
+                   V == other.V;
         }
 
         public override int GetHashCode() {
-            const uint a = 1103515245;
-            uint h = (uint)H.GetHashCode() + a * ((uint)S.GetHashCode() + a * (uint)V.GetHashCode());
-            return (int)h;
+            int hashCode = -1397884734;
+            hashCode = hashCode * -1521134295 + H.GetHashCode();
+            hashCode = hashCode * -1521134295 + S.GetHashCode();
+            hashCode = hashCode * -1521134295 + V.GetHashCode();
+            return hashCode;
+        }
+
+        public static bool operator ==(Hsv left, Hsv right) {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(Hsv left, Hsv right) {
+            return !(left == right);
         }
     }
 }
