@@ -41,27 +41,36 @@ namespace ColorPicker {
         }
 
         public Hsv SelectedHsv {
-            get => new Hsv(currentHue, currentSaturation, currentValue);
-            set {
-                if (value != SelectedHsv) {
-                    currentHue = value.H;
-                    currentSaturation = value.S;
-                    currentValue = value.V;
-
-                    InvalidateVisual();
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SelectedColor)));
-                }
-            }
+            get => (Hsv)GetValue(SelectedHsvProperty);
+            set => SetValue(SelectedHsvProperty, value);
         }
 
-        public Color SelectedColor {
-            get => ColorF.FromHsv(currentHue, currentSaturation, currentValue).ToColor();
-        }
+        public static readonly DependencyProperty SelectedHsvProperty =
+            DependencyProperty.Register(
+                nameof(SelectedHsv),
+                typeof(Hsv),
+                typeof(HsvControl),
+                new FrameworkPropertyMetadata(
+                    new Hsv(0, 0, 0),
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,
+                    (sender, e) => {
+                        var newValue = (Hsv)e.NewValue;
+                        var oldValue = (Hsv)e.OldValue;
+                        if (newValue != oldValue) {
+                            var hsvControl = (HsvControl)sender;
+                            hsvControl.currentHue = newValue.H;
+                            hsvControl.currentSaturation = newValue.S;
+                            hsvControl.currentValue = newValue.V;
+                            hsvControl.InvalidateVisual();
+                            hsvControl.PropertyChanged?.Invoke(hsvControl, new PropertyChangedEventArgs(nameof(SelectedHsv)));
+                        }
+                    })
+                );
 
-        private void OnColorChanged() {
-            InvalidateVisual();
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SelectedHsv)));
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SelectedColor)));
+        private void OnSelectionChanged() {
+            // DependencyPropertyを更新する。
+            // UIの更新やPropertyChangedの通知などはDependencyPropertyの更新の中でやる。
+            SelectedHsv = new Hsv(currentHue, currentSaturation, currentValue);
         }
 
         private static void WritePixels(WriteableBitmap bitmap, Func<int, int, Color> plotter) {
@@ -85,7 +94,6 @@ namespace ColorPicker {
                 bitmap.Unlock();
             }
         }
-
 
         protected override void OnRender(DrawingContext drawingContext) {
             base.OnRender(drawingContext);
@@ -183,7 +191,7 @@ namespace ColorPicker {
                 if (currentSaturation != s || currentValue != v) {
                     currentSaturation = s;
                     currentValue = v;
-                    OnColorChanged();
+                    OnSelectionChanged();
                 }
                 currentState = State.GrabbingSV;
                 Mouse.Capture(this);
@@ -196,7 +204,7 @@ namespace ColorPicker {
                 if (hue < 0) hue += 1.0;
                 if (currentHue != hue) {
                     currentHue = (float)hue;
-                    OnColorChanged();
+                    OnSelectionChanged();
                 }
                 currentState = State.GrabbingHue;
                 Mouse.Capture(this);
@@ -230,7 +238,7 @@ namespace ColorPicker {
                 if (currentSaturation != s || currentValue != v) {
                     currentSaturation = s;
                     currentValue = v;
-                    OnColorChanged();
+                    OnSelectionChanged();
                 }
                 return;
             }
@@ -240,7 +248,7 @@ namespace ColorPicker {
                 if (hue < 0) hue += 1.0;
                 if (currentHue != hue) {
                     currentHue = (float)hue;
-                    OnColorChanged();
+                    OnSelectionChanged();
                 }
                 currentState = State.GrabbingHue;
                 return;
