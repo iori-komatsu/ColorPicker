@@ -6,6 +6,27 @@
         xmlns:local="clr-namespace:ColorPicker"
         mc:Ignorable="d"
         Title="Color Picker" Height="350" Width="550">
+
+    <Window.Resources>
+        <Style TargetType="Label" x:Key="HsvSliderLabel">
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Margin" Value="0,5,0,5"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+        <Style TargetType="Slider" x:Key="HsvSlider">
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="5,0,10,0"/>
+            <Setter Property="Minimum" Value="0.0"/>
+            <Setter Property="Maximum" Value="1.0"/>
+            <Setter Property="LargeChange" Value="0.2"/>
+            <Setter Property="SmallChange" Value="0.05"/>
+        </Style>
+        <Style TargetType="TextBox" x:Key="HsvSliderTextBox">
+            <Setter Property="Width" Value="50"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+    </Window.Resources>
+    
     <Window.InputBindings>
         <KeyBinding Modifiers="Ctrl" Key="C" Command="{Binding CopyColorCodeCommand}" />
     </Window.InputBindings>
@@ -35,37 +56,49 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <Label Grid.Row="0" Grid.Column="0"
-                   FontWeight="Bold" VerticalAlignment="Center"
-                   Margin="0,5,0,5" Content="_H:" Target="{Binding ElementName=sliderH}"/>
-            <Slider Grid.Row="0" Grid.Column="1"
-                    Name="sliderH" VerticalAlignment="Center"
-                    Margin="5,0,10,0" Minimum="0.0" Maximum="1.0" Value="{Binding Path=SelectedHue.Value, Mode=OneWay}"
-                    LargeChange="0.2" SmallChange="0.05" ValueChanged="sliderH_ValueChanged"/>
-            <TextBox Grid.Row="0" Grid.Column="2"
-                     Name="tbH" DockPanel.Dock="Right" Width="50" VerticalAlignment="Center"
+            <Label Name="lblSliderH"
+                   Grid.Row="0" Grid.Column="0"
+                   Style="{StaticResource HsvSliderLabel}"
+                   Target="{Binding ElementName=sliderH}"
+                   Content="_H:"/>
+            <Slider Name="sliderH"
+                    Grid.Row="0" Grid.Column="1"
+                    Style="{StaticResource HsvSlider}"
+                    Value="{Binding Path=SelectedHue.Value, Mode=OneWay}"
+                    ValueChanged="sliderH_ValueChanged"/>
+            <TextBox Name="tbH"
+                     Grid.Row="0" Grid.Column="2"
+                     Style="{StaticResource HsvSliderTextBox}"
                      Text="{Binding ElementName=sliderH, Path=Value, StringFormat={}{0:f3}, UpdateSourceTrigger=PropertyChanged}"/>
 
-            <Label Grid.Row="1" Grid.Column="0"
-                   FontWeight="Bold" VerticalAlignment="Center"
-                   Margin="0,5,0,5" Content="_S:" Target="{Binding ElementName=sliderS}"/>
-            <Slider Grid.Row="1" Grid.Column="1"
-                    Name="sliderS" VerticalAlignment="Center"
-                    Margin="5,0,10,0" Minimum="0.0" Maximum="1.0" Value="{Binding Path=SelectedSaturation.Value, Mode=OneWay}"
-                    LargeChange="0.2" SmallChange="0.05" ValueChanged="sliderS_ValueChanged"/>
-            <TextBox Grid.Row="1" Grid.Column="2"
-                     Name="tbS" DockPanel.Dock="Right" Width="50" VerticalAlignment="Center"
+            <Label Name="lblSliderS"
+                   Grid.Row="1" Grid.Column="0"
+                   Style="{StaticResource HsvSliderLabel}"
+                   Target="{Binding ElementName=sliderS}"
+                   Content="_S:"/>
+            <Slider Name="sliderS"
+                    Grid.Row="1" Grid.Column="1"
+                    Style="{StaticResource HsvSlider}"
+                    Value="{Binding Path=SelectedSaturation.Value, Mode=OneWay}"
+                    ValueChanged="sliderS_ValueChanged"/>
+            <TextBox Name="tbS"
+                     Grid.Row="1" Grid.Column="2"
+                     Style="{StaticResource HsvSliderTextBox}"
                      Text="{Binding ElementName=sliderS, Path=Value, StringFormat={}{0:f3}, UpdateSourceTrigger=PropertyChanged}"/>
 
-            <Label Grid.Row="2" Grid.Column="0"
-                   FontWeight="Bold" VerticalAlignment="Center"
-                   Margin="0,5,0,5" Content="_V:" Target="{Binding ElementName=sliderV}"/>
-            <Slider Grid.Row="2" Grid.Column="1"
-                    Name="sliderV" VerticalAlignment="Center"
-                    Margin="5,0,10,0" Minimum="0.0" Maximum="1.0" Value="{Binding Path=SelectedValue.Value, Mode=OneWay}"
-                    LargeChange="0.2" SmallChange="0.05" ValueChanged="sliderV_ValueChanged"/>
-            <TextBox Grid.Row="2" Grid.Column="2"
-                     Name="tbV" DockPanel.Dock="Right" Width="50" VerticalAlignment="Center"
+            <Label Name="lblSliderV"
+                   Grid.Row="2" Grid.Column="0"
+                   Style="{StaticResource HsvSliderLabel}"
+                   Target="{Binding ElementName=sliderV}"
+                   Content="_V:"/>
+            <Slider Name="sliderV"
+                    Grid.Row="2" Grid.Column="1"
+                    Style="{StaticResource HsvSlider}"
+                    Value="{Binding Path=SelectedValue.Value, Mode=OneWay}"
+                    ValueChanged="sliderV_ValueChanged"/>
+            <TextBox Name="tbV"
+                     Grid.Row="2" Grid.Column="2"
+                     Style="{StaticResource HsvSliderTextBox}"
                      Text="{Binding ElementName=sliderV, Path=Value, StringFormat={}{0:f3}, UpdateSourceTrigger=PropertyChanged}"/>
         </Grid>
 
