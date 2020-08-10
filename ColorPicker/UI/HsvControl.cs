@@ -6,7 +6,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
-namespace ColorPicker {
+namespace ColorPicker.UI {
     public class HsvControl : Control, INotifyPropertyChanged {
         private enum State {
             Initial,
@@ -35,9 +35,9 @@ namespace ColorPicker {
         }
 
         public HsvControl() {
-            this.Width = bitmap.PixelWidth;
-            this.Height = bitmap.PixelHeight;
-            this.IsTabStop = false;
+            Width = bitmap.PixelWidth;
+            Height = bitmap.PixelHeight;
+            IsTabStop = false;
         }
 
         public Hsv SelectedHsv {
@@ -84,7 +84,7 @@ namespace ColorPicker {
                         for (int x = 0; x < bitmap.PixelWidth; ++x) {
                             IntPtr pPixel = pRow + x * 4;
                             Color c = plotter(x, y);
-                            *((int*)pPixel) = c.A << 24 | c.R << 16 | c.G << 8 | c.B;
+                            *(int*)pPixel = c.A << 24 | c.R << 16 | c.G << 8 | c.B;
                         }
                     }
                 }

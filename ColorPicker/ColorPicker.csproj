@@ -81,8 +81,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="ViewModelBase.cs" />
-    <Page Include="MainWindow\MainWindow.xaml">
+    <Compile Include="UI\ViewModelBase.cs" />
+    <Page Include="UI\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -93,8 +93,8 @@
     <Compile Include="ColorExtensions.cs" />
     <Compile Include="ColorF.cs" />
     <Compile Include="Hsv.cs" />
-    <Compile Include="HsvControl.cs" />
-    <Compile Include="MainWindow\MainWindow.xaml.cs">
+    <Compile Include="UI\HsvControl.cs" />
+    <Compile Include="UI\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
@@ -104,7 +104,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MainWindow\MainWindowVM.cs" />
+    <Compile Include="UI\MainWindowVM.cs" />
     <Compile Include="MathF.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>

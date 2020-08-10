@@ -3,7 +3,7 @@ using System;
 using System.Reactive.Linq;
 using System.Windows.Media;
 
-namespace ColorPicker.MainWindow {
+namespace ColorPicker.UI {
     class MainWindowVM : ViewModelBase, IDisposable {
 
         public ReactivePropertySlim<Hsv> SelectedHsv { get; } = new ReactivePropertySlim<Hsv>();

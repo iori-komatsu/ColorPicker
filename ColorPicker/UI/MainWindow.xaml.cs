@@ -2,7 +2,7 @@
 using System.Windows;
 using System.Reactive.Linq;
 
-namespace ColorPicker.MainWindow {
+namespace ColorPicker.UI {
     /// <summary>
     /// MainWindow.xaml の相互作用ロジック
     /// </summary>
