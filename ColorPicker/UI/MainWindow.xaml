@@ -44,7 +44,8 @@
         <local:HsvControl x:Name="hsvControl"
                           Grid.Row="0" Grid.Column="0" Grid.RowSpan="2"
                           Margin="0,0,20,0"
-                          SelectedHsv="{Binding SelectedHsv.Value}"/>
+                          SelectedHsv="{Binding Path=SelectedHsv.Value, Mode=OneWay}"
+                          SelectedHsvChanged="hsvControl_SelectedHsvChanged"/>
 
         <Grid Grid.Row="0" Grid.Column="1" Margin="0,0,0,20">
             <Grid.ColumnDefinitions>

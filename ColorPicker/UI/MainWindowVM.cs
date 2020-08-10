@@ -6,8 +6,9 @@ using System.Windows.Media;
 
 namespace ColorPicker.UI {
     public class MainWindowVM : ViewModelBase, IDisposable {
+        private readonly ColorPickerModel model;
 
-        public ReactiveProperty<Hsv> SelectedHsv { get; }
+        public ReadOnlyReactivePropertySlim<Hsv> SelectedHsv { get; }
 
         public ReadOnlyReactivePropertySlim<Color> SelectedColor { get; }
         public ReadOnlyReactivePropertySlim<Brush> SelectedColorBrush { get; }
@@ -21,8 +22,11 @@ namespace ColorPicker.UI {
         public ReactiveCommand CopyColorCodeCommand { get; } = new ReactiveCommand();
 
         public MainWindowVM(ColorPickerModel model) {
+            this.model = model;
+
             SelectedHsv = model
-                .ToReactivePropertyAsSynchronized(m => m.CurrentHsv);
+                .ObserveProperty(m => m.CurrentHsv)
+                .ToReadOnlyReactivePropertySlim();
 
             SelectedColor = SelectedHsv
                 .Select(hsv => ColorF.FromHsv(hsv.H, hsv.S, hsv.V).ToColor())
@@ -46,6 +50,10 @@ namespace ColorPicker.UI {
             SelectedValue = SelectedHsv
                 .Select(hsv => (double)hsv.V)
                 .ToReadOnlyReactivePropertySlim();
+        }
+
+        public void ChangeCurrentHsv(Hsv newHsv) {
+            model.CurrentHsv = newHsv;
         }
 
         public void Dispose() {

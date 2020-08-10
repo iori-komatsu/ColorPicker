@@ -23,19 +23,23 @@ namespace ColorPicker.UI {
             viewModel.Dispose();
         }
 
+        private void hsvControl_SelectedHsvChanged(HsvControl sender, Hsv newHsv) {
+            viewModel.ChangeCurrentHsv(newHsv);
+        }
+
         private void sliderH_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) {
             Hsv current = viewModel.SelectedHsv.Value;
-            viewModel.SelectedHsv.Value = new Hsv((float)sliderH.Value, current.S, current.V);
+            viewModel.ChangeCurrentHsv(new Hsv((float)sliderH.Value, current.S, current.V));
         }
 
         private void sliderS_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) {
             Hsv current = viewModel.SelectedHsv.Value;
-            viewModel.SelectedHsv.Value = new Hsv(current.H, (float)sliderS.Value, current.V);
+            viewModel.ChangeCurrentHsv(new Hsv(current.H, (float)sliderS.Value, current.V));
         }
 
         private void sliderV_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) {
             Hsv current = viewModel.SelectedHsv.Value;
-            viewModel.SelectedHsv.Value = new Hsv(current.H, current.S, (float)sliderV.Value);
+            viewModel.ChangeCurrentHsv(new Hsv(current.H, current.S, (float)sliderV.Value));
         }
 
         private void CopyColorCode() {

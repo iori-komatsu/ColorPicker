@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -7,7 +6,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace ColorPicker.UI {
-    public class HsvControl : Control, INotifyPropertyChanged {
+    public delegate void HsvChangedEventHandler(HsvControl sender, Hsv newHsv);
+
+    public class HsvControl : Control {
         private enum State {
             Initial,
             GrabbingHue,
@@ -28,7 +29,7 @@ namespace ColorPicker.UI {
         private float currentSaturation = 0.0f;
         private float currentValue = 0.0f;
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event HsvChangedEventHandler SelectedHsvChanged;
 
         static HsvControl() {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(HsvControl), new FrameworkPropertyMetadata(typeof(HsvControl)));
@@ -50,9 +51,8 @@ namespace ColorPicker.UI {
                 nameof(SelectedHsv),
                 typeof(Hsv),
                 typeof(HsvControl),
-                new FrameworkPropertyMetadata(
+                new PropertyMetadata(
                     new Hsv(0, 0, 0),
-                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,
                     (sender, e) => {
                         var newValue = (Hsv)e.NewValue;
                         var oldValue = (Hsv)e.OldValue;
@@ -62,15 +62,15 @@ namespace ColorPicker.UI {
                             hsvControl.currentSaturation = newValue.S;
                             hsvControl.currentValue = newValue.V;
                             hsvControl.InvalidateVisual();
-                            hsvControl.PropertyChanged?.Invoke(hsvControl, new PropertyChangedEventArgs(nameof(SelectedHsv)));
                         }
                     })
                 );
 
-        private void OnSelectionChanged() {
-            // DependencyPropertyを更新する。
-            // UIの更新やPropertyChangedの通知などはDependencyPropertyの更新の中でやる。
-            SelectedHsv = new Hsv(currentHue, currentSaturation, currentValue);
+        private void NotifySelectionChanged(float h, float s, float v) {
+            // 選択されている色が変化したことを通知する。
+            // このメソッドでは currentXxx は書き換えない。
+            // これは、通知を受け取った側が SelectedHsv を set するフローであるため。
+            SelectedHsvChanged?.Invoke(this, new Hsv(h, s, v));
         }
 
         private static void WritePixels(WriteableBitmap bitmap, Func<int, int, Color> plotter) {
@@ -189,9 +189,7 @@ namespace ColorPicker.UI {
                 float s = MathF.Saturate((x - (float)svPlaneRect.Left) / svPlaneWidth);
                 float v = MathF.Saturate(1.0f - (y - (float)svPlaneRect.Top) / svPlaneWidth);
                 if (currentSaturation != s || currentValue != v) {
-                    currentSaturation = s;
-                    currentValue = v;
-                    OnSelectionChanged();
+                    NotifySelectionChanged(currentHue, s, v);
                 }
                 currentState = State.GrabbingSV;
                 Mouse.Capture(this);
@@ -203,8 +201,7 @@ namespace ColorPicker.UI {
                 double hue = Math.Atan2(centerY - y, centerX - x) / (2.0 * Math.PI);
                 if (hue < 0) hue += 1.0;
                 if (currentHue != hue) {
-                    currentHue = (float)hue;
-                    OnSelectionChanged();
+                    NotifySelectionChanged((float)hue, currentSaturation, currentValue);
                 }
                 currentState = State.GrabbingHue;
                 Mouse.Capture(this);
@@ -236,9 +233,7 @@ namespace ColorPicker.UI {
                 float s = MathF.Saturate((x - (float)svPlaneRect.Left) / svPlaneWidth);
                 float v = MathF.Saturate(1.0f - (y - (float)svPlaneRect.Top) / svPlaneWidth);
                 if (currentSaturation != s || currentValue != v) {
-                    currentSaturation = s;
-                    currentValue = v;
-                    OnSelectionChanged();
+                    NotifySelectionChanged(currentHue, s, v);
                 }
                 return;
             }
@@ -247,8 +242,7 @@ namespace ColorPicker.UI {
                 double hue = Math.Atan2(centerY - y, centerX - x) / (2.0 * Math.PI);
                 if (hue < 0) hue += 1.0;
                 if (currentHue != hue) {
-                    currentHue = (float)hue;
-                    OnSelectionChanged();
+                    NotifySelectionChanged((float)hue, currentSaturation, currentValue);
                 }
                 currentState = State.GrabbingHue;
                 return;
