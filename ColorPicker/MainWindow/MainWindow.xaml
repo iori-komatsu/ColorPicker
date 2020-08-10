@@ -31,7 +31,8 @@
     </Window.Resources>
     
     <Window.InputBindings>
-        <KeyBinding Modifiers="Ctrl" Key="C" Command="{Binding CopyColorCodeCommand}" />
+        <KeyBinding Modifiers="Ctrl" Key="C"
+                    Command="{Binding Path=CopyColorCodeCommand, Source={StaticResource ViewModel}}"/>
     </Window.InputBindings>
 
     <Grid DataContext="{StaticResource ViewModel}" Margin="20">
