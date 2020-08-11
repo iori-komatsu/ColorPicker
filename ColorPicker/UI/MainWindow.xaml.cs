@@ -14,8 +14,6 @@ namespace ColorPicker.UI {
             DataContext = viewModel;
 
             InitializeComponent();
-
-            viewModel.CopyColorCodeCommand.Subscribe(_ => CopyColorCode());
         }
 
         protected override void OnClosed(EventArgs e) {
@@ -40,10 +38,6 @@ namespace ColorPicker.UI {
         private void sliderV_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) {
             Hsv current = viewModel.SelectedHsv.Value;
             viewModel.ChangeCurrentHsv(new Hsv(current.H, current.S, (float)sliderV.Value));
-        }
-
-        private void CopyColorCode() {
-            Clipboard.SetText(viewModel.CurrentColorCode.Value);
         }
     }
 }

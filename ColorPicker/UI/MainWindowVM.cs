@@ -1,12 +1,15 @@
 ﻿using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 using System;
+using System.Reactive.Disposables;
 using System.Reactive.Linq;
+using System.Windows;
 using System.Windows.Media;
 
 namespace ColorPicker.UI {
     public class MainWindowVM : ViewModelBase, IDisposable {
         private readonly ColorPickerModel model;
+        private readonly CompositeDisposable disposable = new CompositeDisposable();
 
         public ReadOnlyReactivePropertySlim<Hsv> SelectedHsv { get; }
 
@@ -19,56 +22,68 @@ namespace ColorPicker.UI {
         public ReadOnlyReactivePropertySlim<double> SelectedSaturation { get; }
         public ReadOnlyReactivePropertySlim<double> SelectedValue { get; }
 
-        public ReactiveCommand CopyColorCodeCommand { get; } = new ReactiveCommand();
+        public ReactiveCommand CopyColorCodeCommand { get; }
 
         public MainWindowVM(ColorPickerModel model) {
             this.model = model;
 
             SelectedHsv = model
                 .ObserveProperty(m => m.CurrentHsv)
-                .ToReadOnlyReactivePropertySlim();
+                .ToReadOnlyReactivePropertySlim()
+                .AddTo(disposable);
 
             SelectedColor = SelectedHsv
                 .Select(hsv => ColorF.FromHsv(hsv.H, hsv.S, hsv.V).ToColor())
-                .ToReadOnlyReactivePropertySlim();
+                .ToReadOnlyReactivePropertySlim()
+                .AddTo(disposable);
+
             SelectedColorBrush = SelectedColor
                 .Select(color => (Brush)new SolidColorBrush(color))
-                .ToReadOnlyReactivePropertySlim();
+                .ToReadOnlyReactivePropertySlim()
+                .AddTo(disposable);
+
             InvertedSelectedColorBrush = SelectedColor
                 .Select(color => (Brush)new SolidColorBrush(color.Invert()))
-                .ToReadOnlyReactivePropertySlim();
+                .ToReadOnlyReactivePropertySlim()
+                .AddTo(disposable);
+
             CurrentColorCode = SelectedColor
                 .Select(color => $"#{color.R:x2}{color.G:x2}{color.B:x2}")
-                .ToReadOnlyReactivePropertySlim();
+                .ToReadOnlyReactivePropertySlim()
+                .AddTo(disposable);
 
             SelectedHue = SelectedHsv
                 .Select(hsv => (double)hsv.H)
-                .ToReadOnlyReactivePropertySlim();
+                .ToReadOnlyReactivePropertySlim()
+                .AddTo(disposable);
+
             SelectedSaturation = SelectedHsv
                 .Select(hsv => (double)hsv.S)
-                .ToReadOnlyReactivePropertySlim();
+                .ToReadOnlyReactivePropertySlim()
+                .AddTo(disposable);
+
             SelectedValue = SelectedHsv
                 .Select(hsv => (double)hsv.V)
-                .ToReadOnlyReactivePropertySlim();
+                .ToReadOnlyReactivePropertySlim()
+                .AddTo(disposable);
+
+            CopyColorCodeCommand = new ReactiveCommand().AddTo(disposable);
+
+            CopyColorCodeCommand
+                .Subscribe(_ => CopyColorCode())
+                .AddTo(disposable);
         }
 
         public void ChangeCurrentHsv(Hsv newHsv) {
             model.CurrentHsv = newHsv;
         }
 
+        private void CopyColorCode() {
+            Clipboard.SetText(CurrentColorCode.Value);
+        }
+
         public void Dispose() {
-            CopyColorCodeCommand.Dispose();
-
-            SelectedValue.Dispose();
-            SelectedSaturation.Dispose();
-            SelectedHue.Dispose();
-
-            CurrentColorCode.Dispose();
-            InvertedSelectedColorBrush.Dispose();
-            SelectedColorBrush.Dispose();
-            SelectedColor.Dispose();
-
-            SelectedHsv.Dispose();
+            disposable.Dispose();
         }
     }
 }
